@@ -1,36 +1,27 @@
-import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
-
-interface CartItem {
-  id: number;
-  name: string;
-  style: string;
-  size: string;
-  quantity: number;
-  price: number;
-  image: string;
-}
+import { useCartStore } from '@/stores/cartStore';
+import { toast } from 'sonner';
 
 const Cart = () => {
   const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      name: 'Angora Script Sweater',
-      style: 'Light Blue',
-      size: 'Small',
-      quantity: 1,
-      price: 33000,
-      image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=150&h=150&fit=crop'
-    }
-  ]);
+  const { items, isLoading, removeItem, updateQuantity, createCheckout, getTotalPrice } = useCartStore();
 
-  const handleRemove = (id: number) => {
-    setCartItems(cartItems.filter(item => item.id !== id));
+  const handleRemove = (variantId: string) => {
+    removeItem(variantId);
+    toast.success('Item removed from cart');
   };
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const handleCheckout = async () => {
+    const checkoutUrl = await createCheckout();
+    if (checkoutUrl) {
+      window.open(checkoutUrl, '_blank');
+    } else {
+      toast.error('Failed to create checkout');
+    }
+  };
+
+  const subtotal = getTotalPrice();
 
   return (
     <div className="min-h-screen bg-background theme-white flex flex-col">
@@ -42,12 +33,12 @@ const Cart = () => {
         
         {/* Items count */}
         <p className="text-sm mb-6 text-foreground">
-          {cartItems.length} item{cartItems.length !== 1 ? 's' : ''} in cart
+          {items.length} item{items.length !== 1 ? 's' : ''} in cart
         </p>
         
         {/* Cart Items */}
         <div className="border-t border-foreground">
-          {cartItems.length === 0 ? (
+          {items.length === 0 ? (
             <div className="py-8 text-center text-foreground">
               <p className="text-sm">Your cart is empty</p>
               <Link to="/shop" className="footer-link text-sm mt-4 inline-block">
@@ -55,26 +46,38 @@ const Cart = () => {
               </Link>
             </div>
           ) : (
-            cartItems.map(item => (
-              <div key={item.id} className="flex items-start gap-4 py-6 border-b border-muted">
+            items.map(item => (
+              <div key={item.variantId} className="flex items-start gap-4 py-6 border-b border-muted">
                 {/* Product Image */}
                 <img 
-                  src={item.image} 
-                  alt={item.name}
+                  src={item.product.node.images?.edges?.[0]?.node?.url || '/placeholder.svg'} 
+                  alt={item.product.node.title}
                   className="w-24 h-24 object-cover"
                 />
                 
                 {/* Product Details */}
                 <div className="flex-1 text-sm text-foreground">
-                  <p className="font-medium">{item.name}</p>
-                  <p>Style: {item.style}</p>
-                  <p>Size: {item.size}</p>
-                  <p>x {item.quantity}</p>
+                  <p className="font-medium">{item.product.node.title}</p>
+                  {item.selectedOptions.map(opt => (
+                    <p key={opt.name}>{opt.name}: {opt.value}</p>
+                  ))}
+                  <div className="flex items-center gap-2 mt-2">
+                    <span>x</span>
+                    <select 
+                      value={item.quantity} 
+                      onChange={(e) => updateQuantity(item.variantId, parseInt(e.target.value))}
+                      className="raw-select w-16 text-xs py-1 px-2"
+                    >
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(q => (
+                        <option key={q} value={q}>{q}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
                 
                 {/* Remove Button */}
                 <button 
-                  onClick={() => handleRemove(item.id)}
+                  onClick={() => handleRemove(item.variantId)}
                   className="bg-foreground text-background px-4 py-2 text-xs"
                 >
                   remove
@@ -82,7 +85,8 @@ const Cart = () => {
                 
                 {/* Price */}
                 <p className="text-sm text-foreground w-24 text-right">
-                  ¥{item.price.toLocaleString()}
+                  {item.price.currencyCode === 'JPY' ? '¥' : '$'}
+                  {parseFloat(item.price.amount).toLocaleString()}
                 </p>
               </div>
             ))
@@ -90,7 +94,7 @@ const Cart = () => {
         </div>
         
         {/* Subtotal */}
-        {cartItems.length > 0 && (
+        {items.length > 0 && (
           <div className="mt-6 text-right">
             <p className="text-sm text-foreground border border-foreground inline-block px-4 py-2">
               subtotal (tax incl.) : ¥{subtotal.toLocaleString()}
@@ -99,7 +103,7 @@ const Cart = () => {
         )}
         
         {/* Action Buttons */}
-        {cartItems.length > 0 && (
+        {items.length > 0 && (
           <div className="mt-8 flex justify-center gap-4">
             <button 
               onClick={() => navigate('/shop')}
@@ -108,10 +112,11 @@ const Cart = () => {
               keep shopping
             </button>
             <button 
-              onClick={() => navigate('/checkout')}
+              onClick={handleCheckout}
+              disabled={isLoading}
               className="btn-cart"
             >
-              checkout
+              {isLoading ? 'loading...' : 'checkout'}
             </button>
           </div>
         )}

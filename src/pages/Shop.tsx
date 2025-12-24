@@ -1,5 +1,8 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
+import { fetchProducts, ShopifyProduct } from '@/lib/shopify';
+
 const categories = [{
   label: 'new',
   path: '/shop/new'
@@ -39,70 +42,26 @@ const categories = [{
   bold: true
 }];
 
-// Mock products
-const products = [{
-  id: 1,
-  name: 'Sherpa Jacket',
-  category: 'jackets',
-  image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=300&h=400&fit=crop'
-}, {
-  id: 2,
-  name: 'Graffiti Hoodie',
-  category: 'sweatshirts',
-  image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=300&h=400&fit=crop'
-}, {
-  id: 3,
-  name: 'Pattern Hoodie',
-  category: 'sweatshirts',
-  image: 'https://images.unsplash.com/photo-1578768079052-aa76e52ff62e?w=300&h=400&fit=crop'
-}, {
-  id: 4,
-  name: 'Baseball Hoodie',
-  category: 'sweatshirts',
-  image: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=300&h=400&fit=crop'
-}, {
-  id: 5,
-  name: 'Camo Jacket',
-  category: 'jackets',
-  image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=300&h=400&fit=crop'
-}, {
-  id: 6,
-  name: 'White Reflective Jacket',
-  category: 'jackets',
-  image: 'https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=300&h=400&fit=crop'
-}, {
-  id: 7,
-  name: 'Snow Camo Parka',
-  category: 'jackets',
-  image: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=300&h=400&fit=crop'
-}, {
-  id: 8,
-  name: 'Black Down Jacket',
-  category: 'jackets',
-  image: 'https://images.unsplash.com/photo-1548126032-079a0fb0099d?w=300&h=400&fit=crop'
-}, {
-  id: 9,
-  name: 'Blue Puffer',
-  category: 'jackets',
-  image: 'https://images.unsplash.com/photo-1495105787522-5334e3ffa0ef?w=300&h=400&fit=crop'
-}, {
-  id: 10,
-  name: 'Woodland Camo',
-  category: 'jackets',
-  image: 'https://images.unsplash.com/photo-1551537482-f2075a1d41f2?w=300&h=400&fit=crop'
-}, {
-  id: 11,
-  name: 'Black Puffer',
-  category: 'jackets',
-  image: 'https://images.unsplash.com/photo-1543076447-215ad9ba6923?w=300&h=400&fit=crop'
-}, {
-  id: 12,
-  name: 'Red Satin Bomber',
-  category: 'jackets',
-  image: 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=300&h=400&fit=crop'
-}];
 const Shop = () => {
-  return <div className="min-h-screen bg-background theme-white flex flex-col">
+  const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const data = await fetchProducts(20);
+        setProducts(data);
+      } catch (error) {
+        console.error('Failed to load products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadProducts();
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-background theme-white flex flex-col">
       <Header isWhiteTheme />
       
       {/* Mobile category list */}
@@ -110,9 +69,14 @@ const Shop = () => {
         <details className="border border-foreground text-foreground">
           <summary className="px-3 py-2 cursor-pointer text-sm text-foreground">categories</summary>
           <nav className="px-3 pb-3 flex flex-col gap-1">
-            {categories.map(cat => <Link key={cat.path} to={cat.path} className={`text-sm lowercase text-foreground ${cat.bold ? 'font-bold' : ''}`}>
+            <Link to="/cart" className="text-sm lowercase text-foreground font-bold">
+              cart
+            </Link>
+            {categories.map(cat => (
+              <Link key={cat.path} to={cat.path} className={`text-sm lowercase text-foreground ${cat.bold ? 'font-bold' : ''}`}>
                 {cat.label}
-              </Link>)}
+              </Link>
+            ))}
           </nav>
         </details>
       </div>
@@ -124,19 +88,40 @@ const Shop = () => {
             <Link to="/cart" className="category-link font-bold mb-2">
               cart
             </Link>
-            {categories.map(cat => <Link key={cat.path} to={cat.path} className={`category-link ${cat.bold ? 'active' : ''}`}>
+            {categories.map(cat => (
+              <Link key={cat.path} to={cat.path} className={`category-link ${cat.bold ? 'active' : ''}`}>
                 {cat.label}
-              </Link>)}
+              </Link>
+            ))}
           </nav>
         </aside>
         
         {/* Main Grid - Offset from sidebar */}
         <main className="md:ml-[200px] px-4 md:px-8 lg:pr-16 mt-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {products.map(product => <Link key={product.id} to={`/product/${product.id}`} className="block">
-                <img src={product.image} alt={product.name} className="w-full aspect-[3/4] object-cover" />
-              </Link>)}
-          </div>
+          {loading ? (
+            <div className="text-center py-8 text-foreground">Loading products...</div>
+          ) : products.length === 0 ? (
+            <div className="text-center py-8 text-foreground">
+              <p>No products found</p>
+              <p className="text-sm mt-2">Tell me what products you want to create!</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {products.map(product => (
+                <Link key={product.node.id} to={`/product/${product.node.handle}`} className="block group">
+                  <img 
+                    src={product.node.images?.edges?.[0]?.node?.url || '/placeholder.svg'} 
+                    alt={product.node.title} 
+                    className="w-full aspect-[3/4] object-cover"
+                  />
+                  <div className="mt-2 text-xs text-foreground">
+                    <p className="truncate">{product.node.title}</p>
+                    <p>{product.node.priceRange.minVariantPrice.currencyCode === 'JPY' ? '¥' : '$'}{parseFloat(product.node.priceRange.minVariantPrice.amount).toLocaleString()}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </main>
       </div>
       
@@ -190,6 +175,8 @@ const Shop = () => {
           </a>
         </div>
       </footer>
-    </div>;
+    </div>
+  );
 };
+
 export default Shop;

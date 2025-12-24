@@ -1,92 +1,202 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import { toast } from 'sonner';
-const ProductDetail = () => {
-  const {
-    id
-  } = useParams();
-  const navigate = useNavigate();
-  const [size, setSize] = useState('');
-  const [quantity, setQuantity] = useState('1');
+import { fetchProductByHandle } from '@/lib/shopify';
+import { useCartStore } from '@/stores/cartStore';
 
-  // Mock product data
-  const product = {
-    id,
-    name: 'Boxer Briefs (4 Pack)',
-    brand: 'SITEBYKRICKEL®/Hanes®',
-    color: 'Black',
-    description: 'All cotton classic Hanes® boxer brief.',
-    price: '¥7,700',
-    sizes: ['Small', 'Medium', 'Large', 'XLarge'],
-    images: ['https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?w=600&h=600&fit=crop'],
-    variants: [{
-      color: 'Black',
-      image: 'https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?w=100&h=100&fit=crop'
-    }, {
-      color: 'White',
-      image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=100&h=100&fit=crop'
-    }]
+interface ProductData {
+  id: string;
+  title: string;
+  description: string;
+  handle: string;
+  priceRange: {
+    minVariantPrice: {
+      amount: string;
+      currencyCode: string;
+    };
   };
+  images: {
+    edges: Array<{
+      node: {
+        url: string;
+        altText: string | null;
+      };
+    }>;
+  };
+  variants: {
+    edges: Array<{
+      node: {
+        id: string;
+        title: string;
+        price: {
+          amount: string;
+          currencyCode: string;
+        };
+        availableForSale: boolean;
+        selectedOptions: Array<{
+          name: string;
+          value: string;
+        }>;
+      };
+    }>;
+  };
+  options: Array<{
+    name: string;
+    values: string[];
+  }>;
+}
+
+const ProductDetail = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [product, setProduct] = useState<ProductData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedVariant, setSelectedVariant] = useState<string>('');
+  const [quantity, setQuantity] = useState('1');
+  const addItem = useCartStore(state => state.addItem);
+
+  useEffect(() => {
+    const loadProduct = async () => {
+      if (!id) return;
+      try {
+        const data = await fetchProductByHandle(id);
+        setProduct(data);
+        if (data?.variants?.edges?.[0]) {
+          setSelectedVariant(data.variants.edges[0].node.id);
+        }
+      } catch (error) {
+        console.error('Failed to load product:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadProduct();
+  }, [id]);
+
   const handleAddToCart = () => {
-    if (!size) {
-      toast.error('Please select a size');
+    if (!product || !selectedVariant) {
+      toast.error('Please select a variant');
       return;
     }
-    toast.success(`Added ${product.name} to cart`);
+
+    const variant = product.variants.edges.find(v => v.node.id === selectedVariant);
+    if (!variant) return;
+
+    addItem({
+      product: { node: product },
+      variantId: variant.node.id,
+      variantTitle: variant.node.title,
+      price: variant.node.price,
+      quantity: parseInt(quantity),
+      selectedOptions: variant.node.selectedOptions,
+    });
+
+    toast.success(`Added ${product.title} to cart`);
   };
+
   const handleKeepShopping = () => {
     navigate('/shop');
   };
-  return <div className="min-h-screen bg-background theme-white flex flex-col">
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background theme-white flex flex-col">
+        <Header isWhiteTheme />
+        <div className="flex-1 flex items-center justify-center text-foreground">
+          Loading...
+        </div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-screen bg-background theme-white flex flex-col">
+        <Header isWhiteTheme />
+        <div className="flex-1 flex items-center justify-center text-foreground">
+          Product not found
+        </div>
+      </div>
+    );
+  }
+
+  const currentVariant = product.variants.edges.find(v => v.node.id === selectedVariant)?.node;
+  const price = currentVariant?.price || product.priceRange.minVariantPrice;
+
+  return (
+    <div className="min-h-screen bg-background theme-white flex flex-col">
       <Header isWhiteTheme />
       
       <main className="flex-1 px-4 md:px-8 lg:px-16 mt-8">
         <div className="flex flex-col md:flex-row gap-8 lg:gap-24 max-w-6xl mx-auto">
           {/* Image */}
           <div className="md:w-1/2 flex justify-end">
-            <img src={product.images[0]} alt={product.name} className="w-full max-w-md" />
+            <img 
+              src={product.images?.edges?.[0]?.node?.url || '/placeholder.svg'} 
+              alt={product.title} 
+              className="w-full max-w-md" 
+            />
           </div>
           
           {/* Details */}
           <div className="md:w-1/2 max-w-sm text-secondary-foreground">
             {/* Title */}
             <h1 className="text-base leading-tight">
-              {product.brand}<br />
-              {product.name}
+              SITEBYKRICKEL®<br />
+              {product.title}
             </h1>
             
-            {/* Color */}
-            <p className="text-sm font-bold mt-2">{product.color}</p>
-            
             {/* Description */}
-            <p className="text-sm mt-2">{product.description}</p>
+            <p className="text-sm mt-2">{product.description || 'No description available.'}</p>
             
-            {/* Variant swatches */}
-            <div className="flex gap-2 mt-4">
-              {product.variants.map(variant => <button key={variant.color} className={`w-12 h-12 border ${variant.color === product.color ? 'border-foreground' : 'border-muted'}`}>
-                  <img src={variant.image} alt={variant.color} className="w-full h-full object-cover" />
-                </button>)}
-            </div>
+            {/* Image variants */}
+            {product.images.edges.length > 1 && (
+              <div className="flex gap-2 mt-4">
+                {product.images.edges.slice(0, 4).map((img, idx) => (
+                  <div key={idx} className="w-12 h-12 border border-muted">
+                    <img src={img.node.url} alt={img.node.altText || product.title} className="w-full h-full object-cover" />
+                  </div>
+                ))}
+              </div>
+            )}
             
             {/* Price */}
-            <p className="text-xl mt-6">{product.price}</p>
+            <p className="text-xl mt-6">
+              {price.currencyCode === 'JPY' ? '¥' : '$'}
+              {parseFloat(price.amount).toLocaleString()}
+            </p>
             
-            {/* Size selector */}
-            <div className="mt-4">
-              <select value={size} onChange={e => setSize(e.target.value)} className="raw-select w-32 text-xs py-1.5 px-2">
-                <option value="">-- size --</option>
-                {product.sizes.map(s => <option key={s} value={s}>{s}</option>)}
-              </select>
-            </div>
+            {/* Variant selector */}
+            {product.variants.edges.length > 1 && (
+              <div className="mt-4">
+                <select 
+                  value={selectedVariant} 
+                  onChange={e => setSelectedVariant(e.target.value)} 
+                  className="raw-select w-32 text-xs py-1.5 px-2"
+                >
+                  {product.variants.edges.map(v => (
+                    <option key={v.node.id} value={v.node.id}>
+                      {v.node.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
             
             {/* Quantity + Next link */}
             <div className="mt-3 flex items-center gap-6">
-              <select value={quantity} onChange={e => setQuantity(e.target.value)} className="raw-select w-16 text-xs py-1.5 px-2">
-                {[1, 2, 3, 4, 5].map(q => <option key={q} value={q}>{q}</option>)}
+              <select 
+                value={quantity} 
+                onChange={e => setQuantity(e.target.value)} 
+                className="raw-select w-16 text-xs py-1.5 px-2"
+              >
+                {[1, 2, 3, 4, 5].map(q => (
+                  <option key={q} value={q}>{q}</option>
+                ))}
               </select>
               
-              <Link to="/shop/accessories" className="text-xs lowercase">
+              <Link to="/shop" className="text-xs lowercase">
                 next &gt;
               </Link>
             </div>
@@ -131,6 +241,8 @@ const ProductDetail = () => {
           </a>
         </div>
       </footer>
-    </div>;
+    </div>
+  );
 };
+
 export default ProductDetail;
