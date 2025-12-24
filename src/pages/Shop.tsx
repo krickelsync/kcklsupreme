@@ -34,12 +34,30 @@ const products = [
 
 const Shop = () => {
   return (
-    <div className="min-h-screen bg-background theme-white">
+    <div className="min-h-screen bg-background theme-white flex flex-col">
       <Header isWhiteTheme />
       
-      <div className="flex px-4 md:px-8 lg:px-16 mt-8">
-        {/* Sidebar */}
-        <aside className="w-48 flex-shrink-0 sticky top-8 self-start hidden md:block">
+      {/* Mobile category list */}
+      <div className="md:hidden px-4 mb-6 mt-8">
+        <details className="border border-foreground">
+          <summary className="px-3 py-2 cursor-pointer text-sm">categories</summary>
+          <nav className="px-3 pb-3 flex flex-col gap-1">
+            {categories.map((cat) => (
+              <Link
+                key={cat.path}
+                to={cat.path}
+                className={`text-sm lowercase ${cat.bold ? 'font-bold' : ''}`}
+              >
+                {cat.label}
+              </Link>
+            ))}
+          </nav>
+        </details>
+      </div>
+      
+      <div className="flex-1">
+        {/* Sidebar - Fixed position, right-aligned text */}
+        <aside className="fixed left-0 top-32 w-[180px] hidden md:block text-right pr-8">
           <nav className="flex flex-col gap-0.5">
             {categories.map((cat) => (
               <Link
@@ -51,35 +69,11 @@ const Shop = () => {
               </Link>
             ))}
           </nav>
-          
-          {/* Bottom links */}
-          <div className="mt-8 flex flex-col gap-0.5">
-            <Link to="/shop" className="category-link font-bold">shop</Link>
-            <Link to="/shop/all" className="category-link">view all</Link>
-          </div>
         </aside>
         
-        {/* Mobile category list */}
-        <div className="md:hidden w-full mb-6">
-          <details className="border border-foreground">
-            <summary className="px-3 py-2 cursor-pointer text-sm">categories</summary>
-            <nav className="px-3 pb-3 flex flex-col gap-1">
-              {categories.map((cat) => (
-                <Link
-                  key={cat.path}
-                  to={cat.path}
-                  className={`text-sm lowercase ${cat.bold ? 'font-bold' : ''}`}
-                >
-                  {cat.label}
-                </Link>
-              ))}
-            </nav>
-          </details>
-        </div>
-        
-        {/* Main Grid */}
-        <main className="flex-1">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-0">
+        {/* Main Grid - Offset from sidebar */}
+        <main className="md:ml-[200px] px-4 md:px-8 lg:pr-16 mt-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {products.map((product) => (
               <Link
                 key={product.id}
@@ -94,21 +88,46 @@ const Shop = () => {
               </Link>
             ))}
           </div>
-          
-          {/* Footer links */}
-          <div className="mt-12 mb-8 flex flex-wrap justify-between items-center text-sm">
-            <div className="flex gap-4">
-              <Link to="/shop" className="font-bold lowercase">shop</Link>
-              <Link to="/shop/all" className="lowercase hover:bg-primary hover:text-primary-foreground px-1">view all</Link>
-            </div>
-            <div className="flex gap-4">
-              <Link to="/preview" className="lowercase">fall/winter 2025 preview</Link>
-              <Link to="/lookbook" className="lowercase">lookbook</Link>
-              <Link to="/news" className="lowercase">news</Link>
-            </div>
-          </div>
         </main>
       </div>
+      
+      {/* Footer */}
+      <footer className="mt-16 mb-8 px-4 md:px-8 lg:px-16 md:ml-[200px] lg:pr-16">
+        {/* Top row */}
+        <div className="flex flex-wrap justify-between items-center text-sm mb-8">
+          <div className="flex gap-4">
+            <Link to="/shop" className="font-bold lowercase">shop</Link>
+            <Link to="/shop/all" className="lowercase menu-link px-1">view all</Link>
+          </div>
+          <div className="flex gap-4">
+            <Link to="/preview" className="lowercase">fall/winter 2025 preview</Link>
+            <Link to="/lookbook" className="lowercase">lookbook</Link>
+            <Link to="/news" className="lowercase">news</Link>
+          </div>
+        </div>
+        
+        {/* Bottom row - Links grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+          <div className="flex flex-col gap-1">
+            <Link to="/random" className="lowercase">random</Link>
+            <Link to="/about" className="lowercase">about</Link>
+            <Link to="/stores" className="lowercase">stores</Link>
+          </div>
+          <div className="flex flex-col gap-1">
+            <Link to="/faq" className="lowercase">faq</Link>
+            <Link to="/sizing" className="lowercase">size/measurements</Link>
+            <Link to="/contact" className="lowercase">contact</Link>
+          </div>
+          <div className="flex flex-col gap-1">
+            <Link to="/terms" className="lowercase">terms of use</Link>
+            <Link to="/legal" className="lowercase">legal notice</Link>
+            <Link to="/privacy" className="lowercase">privacy policy</Link>
+          </div>
+          <div className="flex flex-col gap-1">
+            <Link to="/mailing-list" className="lowercase">mailing list</Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

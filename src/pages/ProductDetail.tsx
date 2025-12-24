@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import { toast } from 'sonner';
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [size, setSize] = useState('');
   const [quantity, setQuantity] = useState('1');
 
@@ -34,31 +35,35 @@ const ProductDetail = () => {
     toast.success(`Added ${product.name} to cart`);
   };
 
+  const handleKeepShopping = () => {
+    navigate('/shop');
+  };
+
   return (
-    <div className="min-h-screen bg-background theme-white">
+    <div className="min-h-screen bg-background theme-white flex flex-col">
       <Header isWhiteTheme />
       
-      <main className="px-4 md:px-8 lg:px-16 mt-8">
-        <div className="flex flex-col md:flex-row gap-8 lg:gap-16">
+      <main className="flex-1 px-4 md:px-8 lg:px-16 mt-8">
+        <div className="flex flex-col md:flex-row gap-8 lg:gap-24 max-w-6xl mx-auto">
           {/* Image */}
-          <div className="md:w-1/2">
+          <div className="md:w-1/2 flex justify-end">
             <img
               src={product.images[0]}
               alt={product.name}
-              className="w-full max-w-lg"
+              className="w-full max-w-md"
             />
           </div>
           
           {/* Details */}
-          <div className="md:w-1/2 max-w-md">
-            {/* Breadcrumb */}
-            <h1 className="text-sm mb-1">
+          <div className="md:w-1/2 max-w-sm">
+            {/* Title */}
+            <h1 className="text-sm leading-tight">
               {product.brand}<br />
               {product.name}
             </h1>
             
             {/* Color */}
-            <p className="text-sm font-bold mt-4">{product.color}</p>
+            <p className="text-sm font-bold mt-2">{product.color}</p>
             
             {/* Description */}
             <p className="text-sm mt-2">{product.description}</p>
@@ -83,7 +88,7 @@ const ProductDetail = () => {
               <select
                 value={size}
                 onChange={(e) => setSize(e.target.value)}
-                className="raw-select w-48"
+                className="raw-select w-40"
               >
                 <option value="">-- size --</option>
                 {product.sizes.map((s) => (
@@ -92,8 +97,8 @@ const ProductDetail = () => {
               </select>
             </div>
             
-            {/* Quantity */}
-            <div className="mt-3 flex items-center gap-4">
+            {/* Quantity + Next link */}
+            <div className="mt-3 flex items-center gap-6">
               <select
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
@@ -109,18 +114,28 @@ const ProductDetail = () => {
               </Link>
             </div>
             
-            {/* Add to cart */}
-            <button
-              onClick={handleAddToCart}
-              className="btn-cart mt-6"
-            >
-              add to cart
-            </button>
+            {/* Buttons row */}
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={handleAddToCart}
+                className="btn-cart"
+              >
+                カートに入れる
+              </button>
+              <button
+                onClick={handleKeepShopping}
+                className="btn-cart-secondary"
+              >
+                買い物を続ける
+              </button>
+            </div>
           </div>
         </div>
-        
-        {/* Footer links */}
-        <div className="mt-16 mb-8 flex flex-wrap justify-between items-center text-sm">
+      </main>
+      
+      {/* Footer links */}
+      <footer className="mt-16 mb-8 px-4 md:px-8 lg:px-16">
+        <div className="flex flex-wrap justify-between items-center text-sm max-w-6xl mx-auto">
           <div className="flex gap-4">
             <Link to="/shop" className="font-bold lowercase">shop</Link>
             <Link to="/shop/all" className="lowercase">view all</Link>
@@ -131,7 +146,7 @@ const ProductDetail = () => {
             <Link to="/news" className="lowercase">news</Link>
           </div>
         </div>
-      </main>
+      </footer>
     </div>
   );
 };
