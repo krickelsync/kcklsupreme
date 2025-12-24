@@ -121,6 +121,9 @@ const Shop = () => {
         {/* Sidebar - Fixed position, right-aligned text */}
         <aside className="fixed left-0 top-32 w-[180px] hidden md:block text-right pr-8">
           <nav className="flex flex-col gap-0.5">
+            <Link to="/cart" className="category-link font-bold mb-2">
+              cart
+            </Link>
             {categories.map(cat => <Link key={cat.path} to={cat.path} className={`category-link ${cat.bold ? 'active' : ''}`}>
                 {cat.label}
               </Link>)}
