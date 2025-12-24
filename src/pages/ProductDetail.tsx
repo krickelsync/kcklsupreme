@@ -117,6 +117,18 @@ const ProductDetail = () => {
             <Link to="/news" className="footer-link">news</Link>
           </div>
         </div>
+        
+        {/* Copyright */}
+        <div className="mt-8 text-xs text-center max-w-6xl mx-auto">
+          <a 
+            href="https://www.instagram.com/krickel.sync/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="footer-link"
+          >
+            © 2025 SITEBYKRICKEL. ALL RIGHTS RESERVED
+          </a>
+        </div>
       </footer>
     </div>;
 };
