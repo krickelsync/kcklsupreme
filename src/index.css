@@ -84,14 +84,27 @@
 }
 
 @layer components {
-  /* Supreme-style menu link */
+  /* Supreme-style menu link with slide animation */
   .menu-link {
-    @apply block px-1 py-0.5 text-foreground lowercase cursor-pointer select-none;
-    transition: none;
+    @apply relative block px-1 py-0.5 text-foreground lowercase cursor-pointer select-none overflow-hidden;
+    z-index: 1;
+  }
+
+  .menu-link::before {
+    content: '';
+    @apply absolute top-0 left-0 w-full h-full bg-primary;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+    z-index: -1;
   }
 
   .menu-link:hover {
-    @apply bg-primary text-primary-foreground;
+    @apply text-primary-foreground;
+  }
+
+  .menu-link:hover::before {
+    transform: scaleX(1);
   }
 
   /* Raw select styling */
