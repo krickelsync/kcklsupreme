@@ -145,4 +145,26 @@
   .category-link.active {
     @apply font-bold;
   }
+
+  /* Footer link with red hover and slide animation */
+  .footer-link {
+    @apply relative inline-block text-foreground lowercase cursor-pointer;
+    text-decoration: none;
+  }
+
+  .footer-link::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-full h-[2px] bg-primary;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .footer-link:hover {
+    @apply text-primary;
+  }
+
+  .footer-link:hover::after {
+    transform: scaleX(1);
+  }
 }
