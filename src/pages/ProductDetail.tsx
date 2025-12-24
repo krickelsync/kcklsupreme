@@ -135,15 +135,15 @@ const ProductDetail = () => {
       
       {/* Footer links */}
       <footer className="mt-16 mb-8 px-4 md:px-8 lg:px-16">
-        <div className="flex flex-wrap justify-between items-center text-sm max-w-6xl mx-auto">
+        <div className="flex flex-wrap justify-between items-center text-sm max-w-6xl mx-auto text-foreground">
           <div className="flex gap-4">
-            <Link to="/shop" className="font-bold lowercase">shop</Link>
-            <Link to="/shop/all" className="lowercase">view all</Link>
+            <Link to="/shop" className="font-bold lowercase text-foreground">shop</Link>
+            <Link to="/shop/all" className="lowercase text-foreground">view all</Link>
           </div>
           <div className="flex gap-4">
-            <Link to="/preview" className="lowercase">fall/winter 2025 preview</Link>
-            <Link to="/lookbook" className="lowercase">lookbook</Link>
-            <Link to="/news" className="lowercase">news</Link>
+            <Link to="/preview" className="lowercase text-foreground">fall/winter 2025 preview</Link>
+            <Link to="/lookbook" className="lowercase text-foreground">lookbook</Link>
+            <Link to="/news" className="lowercase text-foreground">news</Link>
           </div>
         </div>
       </footer>

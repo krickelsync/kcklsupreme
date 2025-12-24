@@ -39,14 +39,14 @@ const Shop = () => {
       
       {/* Mobile category list */}
       <div className="md:hidden px-4 mb-6 mt-8">
-        <details className="border border-foreground">
-          <summary className="px-3 py-2 cursor-pointer text-sm">categories</summary>
+        <details className="border border-foreground text-foreground">
+          <summary className="px-3 py-2 cursor-pointer text-sm text-foreground">categories</summary>
           <nav className="px-3 pb-3 flex flex-col gap-1">
             {categories.map((cat) => (
               <Link
                 key={cat.path}
                 to={cat.path}
-                className={`text-sm lowercase ${cat.bold ? 'font-bold' : ''}`}
+                className={`text-sm lowercase text-foreground ${cat.bold ? 'font-bold' : ''}`}
               >
                 {cat.label}
               </Link>
