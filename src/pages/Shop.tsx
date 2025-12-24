@@ -142,35 +142,35 @@ const Shop = () => {
         {/* Top row */}
         <div className="flex flex-wrap justify-between items-center text-sm mb-8">
           <div className="flex gap-4">
-            <Link to="/shop" className="font-bold lowercase">shop</Link>
-            <Link to="/shop/all" className="lowercase menu-link px-1">view all</Link>
+            <Link to="/shop" className="footer-link font-bold">shop</Link>
+            <Link to="/shop/all" className="footer-link">view all</Link>
           </div>
           <div className="flex gap-4">
-            <Link to="/preview" className="lowercase">fall/winter 2025 preview</Link>
-            <Link to="/lookbook" className="lowercase">lookbook</Link>
-            <Link to="/news" className="lowercase">news</Link>
+            <Link to="/preview" className="footer-link">fall/winter 2025 preview</Link>
+            <Link to="/lookbook" className="footer-link">lookbook</Link>
+            <Link to="/news" className="footer-link">news</Link>
           </div>
         </div>
         
         {/* Bottom row - Links grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
           <div className="flex flex-col gap-1">
-            <Link to="/random" className="lowercase">random</Link>
-            <Link to="/about" className="lowercase">about</Link>
-            <Link to="/stores" className="lowercase">stores</Link>
+            <Link to="/random" className="footer-link">random</Link>
+            <Link to="/about" className="footer-link">about</Link>
+            <Link to="/stores" className="footer-link">stores</Link>
           </div>
           <div className="flex flex-col gap-1">
-            <Link to="/faq" className="lowercase">faq</Link>
-            <Link to="/sizing" className="lowercase">size/measurements</Link>
-            <Link to="/contact" className="lowercase">contact</Link>
+            <Link to="/faq" className="footer-link">faq</Link>
+            <Link to="/sizing" className="footer-link">size/measurements</Link>
+            <Link to="/contact" className="footer-link">contact</Link>
           </div>
           <div className="flex flex-col gap-1">
-            <Link to="/terms" className="lowercase">terms of use</Link>
-            <Link to="/legal" className="lowercase">legal notice</Link>
-            <Link to="/privacy" className="lowercase">privacy policy</Link>
+            <Link to="/terms" className="footer-link">terms of use</Link>
+            <Link to="/legal" className="footer-link">legal notice</Link>
+            <Link to="/privacy" className="footer-link">privacy policy</Link>
           </div>
           <div className="flex flex-col gap-1">
-            <Link to="/mailing-list" className="lowercase">mailing list</Link>
+            <Link to="/mailing-list" className="footer-link">mailing list</Link>
           </div>
         </div>
       </footer>
