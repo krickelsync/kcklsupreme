@@ -146,25 +146,27 @@
     @apply font-bold;
   }
 
-  /* Footer link with red hover and slide animation */
+  /* Footer link with red box slide animation */
   .footer-link {
-    @apply relative inline-block text-foreground lowercase cursor-pointer;
+    @apply relative inline-block text-foreground lowercase cursor-pointer overflow-hidden;
     text-decoration: none;
+    z-index: 1;
   }
 
-  .footer-link::after {
+  .footer-link::before {
     content: '';
-    @apply absolute bottom-0 left-0 w-full h-[2px] bg-primary;
+    @apply absolute top-0 left-0 w-full h-full bg-primary;
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.3s ease;
+    z-index: -1;
   }
 
   .footer-link:hover {
-    @apply text-primary;
+    @apply text-primary-foreground;
   }
 
-  .footer-link:hover::after {
+  .footer-link:hover::before {
     transform: scaleX(1);
   }
 }
