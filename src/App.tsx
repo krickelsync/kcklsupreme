@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
+import MusicPlayer from "./components/MusicPlayer";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/mailing-list" element={<Index />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <MusicPlayer />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
