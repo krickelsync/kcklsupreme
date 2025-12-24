@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
+import Cart from "./pages/Cart";
 import NotFound from "./pages/NotFound";
 import MusicPlayer from "./components/MusicPlayer";
 
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/shop" element={<Shop />} />
           <Route path="/shop/:category" element={<Shop />} />
           <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/cart" element={<Cart />} />
           {/* Placeholder routes */}
           <Route path="/news" element={<Index />} />
           <Route path="/preview" element={<Index />} />
