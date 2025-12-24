@@ -110,14 +110,25 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23000' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
   }
 
-  /* Add to cart button */
+  /* Add to cart button - Red */
   .btn-cart {
-    @apply bg-primary text-primary-foreground px-6 py-3 cursor-pointer uppercase tracking-wide;
+    @apply bg-primary text-primary-foreground px-6 py-3 cursor-pointer tracking-wide text-sm;
     border: none;
     transition: none;
   }
 
   .btn-cart:hover {
+    @apply opacity-90;
+  }
+
+  /* Keep shopping button - Black */
+  .btn-cart-secondary {
+    @apply bg-foreground text-background px-6 py-3 cursor-pointer tracking-wide text-sm;
+    border: none;
+    transition: none;
+  }
+
+  .btn-cart-secondary:hover {
     @apply opacity-90;
   }
 
