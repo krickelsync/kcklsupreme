@@ -37,6 +37,19 @@ const Index = () => {
         <div className="mt-12">
           <SocialIcons />
         </div>
+
+        {/* Copyright */}
+        <div className="mt-8 text-xs text-center">
+          <a 
+            href="https://www.instagram.com/krickel.sync/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="menu-link inline-block"
+          >
+            © 2025 SITEBYKRICKEL.<br />
+            ALL RIGHTS RESERVED
+          </a>
+        </div>
       </main>
     </div>
   );

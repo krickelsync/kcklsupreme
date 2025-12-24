@@ -182,7 +182,8 @@ const Shop = () => {
             rel="noopener noreferrer"
             className="footer-link"
           >
-            © 2025 SITEBYKRICKEL. ALL RIGHTS RESERVED
+            © 2025 SITEBYKRICKEL.<br />
+            ALL RIGHTS RESERVED
           </a>
         </div>
       </footer>
