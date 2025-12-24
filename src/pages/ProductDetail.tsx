@@ -51,7 +51,7 @@ const ProductDetail = () => {
           {/* Details */}
           <div className="md:w-1/2 max-w-sm text-secondary-foreground">
             {/* Title */}
-            <h1 className="text-sm leading-tight">
+            <h1 className="text-base leading-tight">
               {product.brand}<br />
               {product.name}
             </h1>
@@ -74,7 +74,7 @@ const ProductDetail = () => {
             
             {/* Size selector */}
             <div className="mt-4">
-              <select value={size} onChange={e => setSize(e.target.value)} className="raw-select w-40">
+              <select value={size} onChange={e => setSize(e.target.value)} className="raw-select w-32 text-xs py-1.5 px-2">
                 <option value="">-- size --</option>
                 {product.sizes.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
@@ -82,11 +82,11 @@ const ProductDetail = () => {
             
             {/* Quantity + Next link */}
             <div className="mt-3 flex items-center gap-6">
-              <select value={quantity} onChange={e => setQuantity(e.target.value)} className="raw-select w-20">
+              <select value={quantity} onChange={e => setQuantity(e.target.value)} className="raw-select w-16 text-xs py-1.5 px-2">
                 {[1, 2, 3, 4, 5].map(q => <option key={q} value={q}>{q}</option>)}
               </select>
               
-              <Link to="/shop/accessories" className="text-sm lowercase">
+              <Link to="/shop/accessories" className="text-xs lowercase">
                 next &gt;
               </Link>
             </div>
