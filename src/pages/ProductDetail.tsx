@@ -92,12 +92,12 @@ const ProductDetail = () => {
             </div>
             
             {/* Buttons row */}
-            <div className="mt-6 flex gap-3">
+            <div className="mt-6 flex gap-2">
               <button onClick={handleAddToCart} className="btn-cart">
-                カートに入れる
+                add to cart
               </button>
               <button onClick={handleKeepShopping} className="btn-cart-secondary">
-                買い物を続ける
+                keep shopping
               </button>
             </div>
           </div>
