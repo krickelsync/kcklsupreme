@@ -87,7 +87,7 @@ const ProductDetail = () => {
               </select>
               
               <Link to="/shop/accessories" className="text-sm lowercase">
-                next >
+                next &gt;
               </Link>
             </div>
             
