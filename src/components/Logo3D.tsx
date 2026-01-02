@@ -1,5 +1,5 @@
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
-import { OrbitControls, Center } from '@react-three/drei';
+import { OrbitControls, Center, Environment } from '@react-three/drei';
 import { Suspense, useRef } from 'react';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import * as THREE from 'three';
@@ -14,27 +14,33 @@ const Model = ({ autoRotate = true }: ModelProps) => {
   const obj = useLoader(OBJLoader, OBJ_URL);
   const groupRef = useRef<THREE.Group>(null);
 
-  // Apply material to all meshes in the OBJ
+  // Apply shiny red metallic material to all meshes
   obj.traverse((child) => {
     if (child instanceof THREE.Mesh) {
       child.material = new THREE.MeshStandardMaterial({
-        color: '#000000',
-        metalness: 0.3,
-        roughness: 0.4,
+        color: '#FF0000',
+        metalness: 0.95,
+        roughness: 0.05,
+        envMapIntensity: 2,
       });
     }
   });
 
-  useFrame((_, delta) => {
-    if (autoRotate && groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.5;
+  useFrame((state, delta) => {
+    if (groupRef.current) {
+      // Auto rotation
+      if (autoRotate) {
+        groupRef.current.rotation.y += delta * 0.5;
+      }
+      // Bouncing animation
+      groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 2) * 0.15;
     }
   });
 
   return (
     <group ref={groupRef}>
       <Center>
-        <primitive object={obj} scale={1} />
+        <primitive object={obj} scale={1.5} />
       </Center>
     </group>
   );
@@ -54,16 +60,18 @@ interface Logo3DProps {
 
 const Logo3D = ({ className = '', autoRotate = true }: Logo3DProps) => {
   return (
-    <div className={`w-48 h-48 md:w-64 md:h-64 ${className}`}>
+    <div className={`w-72 h-72 md:w-96 md:h-96 ${className}`}>
       <Canvas
         camera={{ position: [0, 0, 5], fov: 50 }}
         style={{ background: 'transparent' }}
       >
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[5, 5, 5]} intensity={1} />
-        <directionalLight position={[-5, -5, -5]} intensity={0.3} />
+        <ambientLight intensity={0.4} />
+        <directionalLight position={[5, 5, 5]} intensity={1.5} />
+        <directionalLight position={[-5, -5, -5]} intensity={0.5} />
+        <spotLight position={[0, 10, 0]} intensity={1} angle={0.3} />
         <Suspense fallback={<LoadingFallback />}>
           <Model autoRotate={autoRotate} />
+          <Environment preset="city" />
         </Suspense>
         <OrbitControls 
           enableZoom={false} 

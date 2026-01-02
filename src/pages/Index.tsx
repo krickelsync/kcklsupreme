@@ -20,8 +20,8 @@ const Index = () => {
       <Header />
       
       {/* 3D Logo */}
-      <div className="flex justify-center mt-4">
-        <Logo3D />
+      <div className="flex justify-center mt-8 md:mt-12">
+        <Logo3D className="drop-shadow-[0_0_30px_rgba(255,0,0,0.5)]" />
       </div>
 
       {/* Centered Menu */}
