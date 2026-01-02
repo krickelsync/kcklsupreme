@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import SocialIcons from '@/components/SocialIcons';
-
+import Logo3D from '@/components/Logo3D';
 const menuItems = [
   { label: 'news', path: '/news' },
   { label: 'fall/winter 2025 preview', path: '/preview' },
@@ -19,6 +19,11 @@ const Index = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       
+      {/* 3D Logo */}
+      <div className="flex justify-center mt-4">
+        <Logo3D />
+      </div>
+
       {/* Centered Menu */}
       <main className="flex-1 flex flex-col items-center justify-center px-4">
         <nav className="flex flex-col items-start">
