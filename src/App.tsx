@@ -7,6 +7,12 @@ import Index from "./pages/Index";
 import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
+import News from "./pages/News";
+import About from "./pages/About";
+import Stores from "./pages/Stores";
+import Contact from "./pages/Contact";
+import MailingList from "./pages/MailingList";
+import Lookbook from "./pages/Lookbook";
 import NotFound from "./pages/NotFound";
 import MusicPlayer from "./components/MusicPlayer";
 
@@ -24,15 +30,12 @@ const App = () => (
           <Route path="/shop/:category" element={<Shop />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/cart" element={<Cart />} />
-          {/* Placeholder routes */}
-          <Route path="/news" element={<Index />} />
-          <Route path="/preview" element={<Index />} />
-          <Route path="/lookbook" element={<Index />} />
-          <Route path="/random" element={<Index />} />
-          <Route path="/about" element={<Index />} />
-          <Route path="/stores" element={<Index />} />
-          <Route path="/contact" element={<Index />} />
-          <Route path="/mailing-list" element={<Index />} />
+          <Route path="/news" element={<News />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/stores" element={<Stores />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/mailing-list" element={<MailingList />} />
+          <Route path="/lookbook" element={<Lookbook />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <MusicPlayer />

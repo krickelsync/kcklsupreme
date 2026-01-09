@@ -134,7 +134,6 @@ const Shop = () => {
             <Link to="/shop/all" className="footer-link">view all</Link>
           </div>
           <div className="flex gap-4">
-            <Link to="/preview" className="footer-link">fall/winter 2025 preview</Link>
             <Link to="/lookbook" className="footer-link">lookbook</Link>
             <Link to="/news" className="footer-link">news</Link>
           </div>
@@ -143,7 +142,6 @@ const Shop = () => {
         {/* Bottom row - Links grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
           <div className="flex flex-col gap-1">
-            <Link to="/random" className="footer-link">random</Link>
             <Link to="/about" className="footer-link">about</Link>
             <Link to="/stores" className="footer-link">stores</Link>
           </div>
