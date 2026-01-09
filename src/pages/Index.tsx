@@ -4,10 +4,7 @@ import SocialIcons from '@/components/SocialIcons';
 import Logo3D from '@/components/Logo3D';
 const menuItems = [
   { label: 'news', path: '/news' },
-  { label: 'fall/winter 2025 preview', path: '/preview' },
-  { label: 'fall/winter 2025 lookbook', path: '/lookbook' },
   { label: 'shop', path: '/shop', bold: true },
-  { label: 'random', path: '/random' },
   { label: 'about', path: '/about' },
   { label: 'stores', path: '/stores' },
   { label: 'contact', path: '/contact' },
