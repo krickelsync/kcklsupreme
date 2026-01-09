@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import { toast } from 'sonner';
-import { fetchProductByHandle } from '@/lib/shopify';
+import { fetchProductByHandle, fetchProducts, ShopifyProduct } from '@/lib/shopify';
 import { useCartStore } from '@/stores/cartStore';
 
 interface ProductData {
@@ -54,16 +54,21 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [selectedVariant, setSelectedVariant] = useState<string>('');
   const [quantity, setQuantity] = useState('1');
+  const [allProducts, setAllProducts] = useState<ShopifyProduct[]>([]);
   const addItem = useCartStore(state => state.addItem);
 
   useEffect(() => {
     const loadProduct = async () => {
       if (!id) return;
       try {
-        const data = await fetchProductByHandle(id);
-        setProduct(data);
-        if (data?.variants?.edges?.[0]) {
-          setSelectedVariant(data.variants.edges[0].node.id);
+        const [productData, productsData] = await Promise.all([
+          fetchProductByHandle(id),
+          fetchProducts(50)
+        ]);
+        setProduct(productData);
+        setAllProducts(productsData);
+        if (productData?.variants?.edges?.[0]) {
+          setSelectedVariant(productData.variants.edges[0].node.id);
         }
       } catch (error) {
         console.error('Failed to load product:', error);
@@ -73,6 +78,14 @@ const ProductDetail = () => {
     };
     loadProduct();
   }, [id]);
+
+  const getNextProductHandle = () => {
+    if (!product || allProducts.length === 0) return null;
+    const currentIndex = allProducts.findIndex(p => p.node.handle === product.handle);
+    if (currentIndex === -1) return allProducts[0]?.node.handle || null;
+    const nextIndex = (currentIndex + 1) % allProducts.length;
+    return allProducts[nextIndex]?.node.handle || null;
+  };
 
   const handleAddToCart = () => {
     if (!product || !selectedVariant) {
@@ -196,9 +209,11 @@ const ProductDetail = () => {
                 ))}
               </select>
               
-              <Link to="/shop" className="text-xs lowercase">
-                next &gt;
-              </Link>
+              {getNextProductHandle() && (
+                <Link to={`/product/${getNextProductHandle()}`} className="text-xs lowercase">
+                  next &gt;
+                </Link>
+              )}
             </div>
             
             {/* Buttons row */}
@@ -222,7 +237,6 @@ const ProductDetail = () => {
             <Link to="/shop/all" className="footer-link">view all</Link>
           </div>
           <div className="flex gap-4">
-            <Link to="/preview" className="footer-link">fall/winter 2025 preview</Link>
             <Link to="/lookbook" className="footer-link">lookbook</Link>
             <Link to="/news" className="footer-link">news</Link>
           </div>

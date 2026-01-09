@@ -130,7 +130,6 @@ const Cart = () => {
             <Link to="/shop/all" className="footer-link">view all</Link>
           </div>
           <div className="flex gap-4">
-            <Link to="/preview" className="footer-link">fall/winter 2025 preview</Link>
             <Link to="/lookbook" className="footer-link">lookbook</Link>
             <Link to="/news" className="footer-link">news</Link>
           </div>
