@@ -55,6 +55,7 @@ const ProductDetail = () => {
   const [selectedVariant, setSelectedVariant] = useState<string>('');
   const [quantity, setQuantity] = useState('1');
   const [allProducts, setAllProducts] = useState<ShopifyProduct[]>([]);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const addItem = useCartStore(state => state.addItem);
 
   useEffect(() => {
@@ -67,6 +68,7 @@ const ProductDetail = () => {
         ]);
         setProduct(productData);
         setAllProducts(productsData);
+        setSelectedImageIndex(0);
         if (productData?.variants?.edges?.[0]) {
           setSelectedVariant(productData.variants.edges[0].node.id);
         }
@@ -146,7 +148,7 @@ const ProductDetail = () => {
           {/* Image */}
           <div className="md:w-1/2 flex justify-end">
             <img 
-              src={product.images?.edges?.[0]?.node?.url || '/placeholder.svg'} 
+              src={product.images?.edges?.[selectedImageIndex]?.node?.url || '/placeholder.svg'} 
               alt={product.title} 
               className="w-full max-w-md" 
             />
@@ -167,9 +169,15 @@ const ProductDetail = () => {
             {product.images.edges.length > 1 && (
               <div className="flex gap-2 mt-4">
                 {product.images.edges.slice(0, 4).map((img, idx) => (
-                  <div key={idx} className="w-12 h-12 border border-muted">
+                  <button 
+                    key={idx} 
+                    onClick={() => setSelectedImageIndex(idx)}
+                    className={`w-12 h-12 border cursor-pointer ${
+                      selectedImageIndex === idx ? 'border-foreground' : 'border-muted'
+                    }`}
+                  >
                     <img src={img.node.url} alt={img.node.altText || product.title} className="w-full h-full object-cover" />
-                  </div>
+                  </button>
                 ))}
               </div>
             )}

@@ -45,6 +45,7 @@ const categories = [{
 const Shop = () => {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hoveredProduct, setHoveredProduct] = useState<string | null>(null);
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -108,11 +109,21 @@ const Shop = () => {
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {products.map(product => (
-                <Link key={product.node.id} to={`/product/${product.node.handle}`} className="block group">
+                <Link 
+                  key={product.node.id} 
+                  to={`/product/${product.node.handle}`} 
+                  className="block group"
+                  onMouseEnter={() => setHoveredProduct(product.node.id)}
+                  onMouseLeave={() => setHoveredProduct(null)}
+                >
                   <img 
-                    src={product.node.images?.edges?.[0]?.node?.url || '/placeholder.svg'} 
+                    src={
+                      hoveredProduct === product.node.id && product.node.images?.edges?.[1]?.node?.url
+                        ? product.node.images.edges[1].node.url
+                        : product.node.images?.edges?.[0]?.node?.url || '/placeholder.svg'
+                    } 
                     alt={product.node.title} 
-                    className="w-full aspect-[3/4] object-cover"
+                    className="w-full aspect-[3/4] object-cover transition-opacity duration-300"
                   />
                   <div className="mt-2 text-xs text-foreground">
                     <p className="truncate">{product.node.title}</p>
