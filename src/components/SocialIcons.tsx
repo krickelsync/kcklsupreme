@@ -3,7 +3,7 @@ import { Instagram, Youtube } from 'lucide-react';
 const SocialIcons = () => {
   return (
     <div className="flex items-center gap-4">
-      <a href="#" className="text-muted-foreground hover:text-foreground" aria-label="Instagram">
+      <a href="https://instagram.com/krickel.sync" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground" aria-label="Instagram">
         <Instagram size={18} />
       </a>
       <a href="#" className="text-muted-foreground hover:text-foreground" aria-label="YouTube">
